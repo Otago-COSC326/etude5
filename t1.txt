@@ -1,5 +1,5 @@
-aac
-aca
-bca
-cca
-cab
+abc
+caa
+bbb
+ddd
+ede
