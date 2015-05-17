@@ -27,7 +27,14 @@ class BestMatchesGenerator(strips: List[Strip]) extends GraphCarpetGenerator(str
     }
     val result = getBestMatches(length)
     result match {
-      case Left(s) => printNodesWithSort(s)
+      case Left(s) => {
+        printNodesWithSort(s)
+        var totalCount = 0
+        s.sliding(2).foreach { list: List[Node] =>
+          totalCount += findMatchCount(list.head("value").getOrElse(""), list.last("value").getOrElse(""))
+        }
+        println(totalCount)
+      }
       case Right(s) => println(s.map(_.value).mkString(" "))
     }
   }
@@ -109,5 +116,36 @@ class BestMatchesGenerator(strips: List[Strip]) extends GraphCarpetGenerator(str
       return Some(result)
     }
     None
+  }
+
+  def findMatchableStrip(strip: Strip, eligibleStrips: List[Strip] = null) : List[(Strip, Int)] = {
+    val result = ListBuffer.empty[(Strip, Int)]
+    val stripsPool = if(eligibleStrips != null){
+      eligibleStrips
+    }else{
+      strips
+    }
+    for(s <- stripsPool if s.id != strip.id){
+      var matchesCount = strip.value.length
+      for (c <- s.value.zipWithIndex){
+        if(strip.value(c._2) == c._1){
+          matchesCount -= 1
+        }
+      }
+      if(matchesCount != strip.value.length){
+        result += (s->matchesCount)
+      }
+    }
+    result.toList
+  }
+
+  def findMatchCount(s1: String, s2: String): Int = {
+    var matchesCount = 0
+    for(c <- s1.zipWithIndex){
+      if(s2(c._2) == c._1){
+        matchesCount += 1
+      }
+    }
+    matchesCount
   }
 }

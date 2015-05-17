@@ -141,5 +141,4 @@ class NonMatchesGenerator(strips: List[Strip]) extends GraphCarpetGenerator(stri
 //    println(s"${s1}, ${s2}, ${matchesCount == 0}")
     matchesCount == 0
   }
-
 }

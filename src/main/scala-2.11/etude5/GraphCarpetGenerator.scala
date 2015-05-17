@@ -93,27 +93,6 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
     }
   }
 
-  def findMatchableStrip(strip: Strip, eligibleStrips: List[Strip] = null) : List[(Strip, Int)] = {
-    val result = ListBuffer.empty[(Strip, Int)]
-    val stripsPool = if(eligibleStrips != null){
-      eligibleStrips
-    }else{
-      strips
-    }
-    for(s <- stripsPool if s.id != strip.id){
-      var matchesCount = strip.value.length
-      for (c <- s.value.zipWithIndex){
-        if(strip.value(c._2) == c._1){
-          matchesCount -= 1
-        }
-      }
-      if(matchesCount != strip.value.length){
-        result += (s->matchesCount)
-      }
-    }
-    result.toList
-  }
-
   def getNodeByValue(index: String = "strips", value: String) = {
     val wordIndex  = indexManager(ds).forNodes("strips")
     val startNode = wordIndex.get("value", value).getSingle
