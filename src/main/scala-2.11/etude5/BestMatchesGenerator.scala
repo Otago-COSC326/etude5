@@ -9,19 +9,37 @@ import scala.collection.JavaConversions._
 /**
  * Created by tinhtooaung on 14/05/15.
  */
-class BestMatchesGenerator(strips: List[Strip], option: String) extends GraphCarpetGenerator(strips, option){
+class BestMatchesGenerator(strips: List[Strip]) extends GraphCarpetGenerator(strips, "b"){
+
+  override def neo4jStoreDir = "/tmp/temp-neo-best"
 
   constructGraph { strip =>
     findMatchableStrip(strip)
   }
 
-  def findBestMatches(length: Int) = {
+  def findBestMatches(length: Int): Unit = {
+    if(strips.isEmpty || (strips.size < length)){
+      return
+    }
+    if(length == 1){
+      println(strips.head.value)
+      return
+    }
+    val result = getBestMatches(length)
+    result match {
+      case Left(s) => printNodesWithSort(s)
+      case Right(s) => println(s.map(_.value).mkString(" "))
+    }
+  }
+
+  def getBestMatches(length: Int): Either[List[Node], List[Strip]] = {
     val possiblePaths = ListBuffer[Path]()
     for(s <- strips){
       possiblePaths ++= findPossiblePaths(s, length)
     }
     var chosenNodes = mutable.LinkedHashSet[Node]()
     var nextWeight = 0
+    var count = 0
     do{
       val chosen = if(chosenNodes.nonEmpty){
         val newPaths = possiblePaths.toList.filter { path =>
@@ -41,9 +59,14 @@ class BestMatchesGenerator(strips: List[Strip], option: String) extends GraphCar
         }
         nextWeight += getCurrentWeight(chosen.get)
       }
-    }while(chosenNodes.size < length)
-    println(nextWeight)
-    printNodes(chosenNodes.toList.grouped(length).toList.head)
+      count += 1
+    }while(chosenNodes.size < length && count < 1000)
+    val finalResult = chosenNodes.toList.grouped(length).toList.head
+    if(finalResult.size != length){
+      Right(strips.take(length).sortBy(_.value))
+    }else{
+      Left(finalResult)
+    }
   }
 
   def findPossiblePaths(startStrip: Strip, length: Int, eligibleStrip: List[Strip]= null) = {

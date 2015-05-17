@@ -1,10 +1,10 @@
 package etude5
 
-import java.util.{UUID, Scanner}
-import sun.security.provider.MD5
+import java.util.{Scanner, UUID}
 
 import scala.collection.mutable.ListBuffer
-import scala.util.{Random, Try}
+import scala.util.Try
+
 import scalax.file.Path
 
 /**
@@ -20,21 +20,25 @@ object Etude5 {
       return
     }
 
-    val path: Path = Path.fromString("/tmp/temp-neo-test")
+    var path: Path = Path.fromString("/tmp/temp-neo-best")
+    Try(path.deleteRecursively(continueOnFailure = false))
+
+    path = Path.fromString("/tmp/temp-neo-non")
     Try(path.deleteRecursively(continueOnFailure = false))
 
 
     args(0) match {
-      case "-b" => {
+      case "-m" => {
         val data: List[Strip] = getInputData()
-        if(data.isEmpty || (data.size < args(1).toInt)){
-          return
-        }
-        new BestMatchesGenerator(data, args(0)).findBestMatches(args(1).toInt)
+        new BestMatchesGenerator(data).findBestMatches(args(1).toInt)
       }
       case "-n" => {
         val data: List[Strip] = getInputData(false)
         new NonMatchesGenerator(data).findNonMatches(args(1).toInt)
+      }
+      case "-b" => {
+        val data: List[Strip] = getInputData()
+        new BalanceMatchesGenerator(data).findBalanceMatches(args(1).toInt)
       }
       case _ => println("Not implemented yet")
     }

@@ -14,7 +14,7 @@ import scala.collection.mutable.ListBuffer
 class GraphCarpetGenerator(strips: List[Strip], option: String)
   extends Neo4jWrapper with EmbeddedGraphDatabaseServiceProvider with Cypher{
 
-  def neo4jStoreDir = "/tmp/temp-neo-test"
+  def neo4jStoreDir = ""
 
 
   def getCurrentWeight(path: Path): Int ={
@@ -37,12 +37,18 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
 
   def printPaths(paths: List[Path]) = {
     for(path <- paths){
-      printNodes(path.nodes().toList)
+      printNodesWithSort(path.nodes().toList)
     }
   }
 
-  def printNodes(nodes: List[Node]) = {
+  def printNodesWithSort(nodes: List[Node]) = {
     println(nodes.toList.sortBy(_("value").getOrElse("")).map{ node =>
+      node("value").getOrElse("")
+    }.mkString(" "))
+  }
+
+  def printNodes(nodes: List[Node]) = {
+    println(nodes.toList.map{ node =>
       node("value").getOrElse("")
     }.mkString(" "))
   }
