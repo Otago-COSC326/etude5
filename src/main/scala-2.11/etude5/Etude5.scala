@@ -13,6 +13,7 @@ import scalax.file.Path
 object Etude5 {
 
   def main(args: Array[String]): Unit = {
+
     if(args.isEmpty || args.length != 2){
       println("Usage: [-n] [size] :No Matches")
       println("Usage: [-m] [size] :Maximum matches")
@@ -27,37 +28,29 @@ object Etude5 {
     Try(path.deleteRecursively(continueOnFailure = false))
 
 
+    val data: List[Strip] = getInputData
     args(0) match {
       case "-m" => {
-        val data: List[Strip] = getInputData()
         new BestMatchesGenerator(data).findBestMatches(args(1).toInt)
       }
       case "-n" => {
-        val data: List[Strip] = getInputData(false)
-        new NonMatchesGenerator(data).findNonMatches(args(1).toInt)
+        new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)
       }
       case "-b" => {
-        val data: List[Strip] = getInputData()
         new BalanceMatchesGenerator(data).findBalanceMatches(args(1).toInt)
       }
       case _ => println("Not implemented yet")
     }
   }
 
-  def getInputData(allowDuplicated: Boolean = true) : List[Strip]= {
+  def getInputData : List[Strip]= {
     val scanner = new Scanner(System.in)
     try{
       val inputs = ListBuffer.empty[Strip]
       while(scanner.hasNextLine){
         val line: String = scanner.nextLine()
         if(line != ""){
-          if(allowDuplicated){
-            inputs += Strip(line, UUID.randomUUID().toString)
-          }else{
-            if(!inputs.exists(_.value == line)){
-              inputs += Strip(line, UUID.randomUUID().toString)
-            }
-          }
+          inputs += Strip(line, UUID.randomUUID().toString)
         }
       }
       val result = inputs.toList.sortBy { s =>

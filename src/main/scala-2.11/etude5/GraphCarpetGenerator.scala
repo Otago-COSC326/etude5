@@ -16,7 +16,6 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
 
   def neo4jStoreDir = ""
 
-
   def getCurrentWeight(path: Path): Int ={
     var sum: Int = 0
     path.relationships().foreach { rel =>

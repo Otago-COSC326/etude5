@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
 /**
  * Created by tinhtooaung on 14/05/15.
  */
-class NonMatchesGenerator(strips: List[Strip]) extends GraphCarpetGenerator(strips, "-n"){
+class NonMatchesGenerator(var strips: Set[Strip]) extends GraphCarpetGenerator(strips.toList, "-n"){
 
   override def neo4jStoreDir = "/tmp/temp-neo-non"
 
