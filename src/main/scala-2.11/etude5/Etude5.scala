@@ -3,7 +3,7 @@ package etude5
 import java.util.{Scanner, UUID}
 
 import scala.collection.mutable.ListBuffer
-import scala.util.Try
+import scala.util.{Random, Try}
 
 import scalax.file.Path
 
@@ -21,12 +21,10 @@ object Etude5 {
       return
     }
 
-    var path: Path = Path.fromString("/tmp/temp-neo-best")
-    Try(path.deleteRecursively(continueOnFailure = false))
-
-    path = Path.fromString("/tmp/temp-neo-non")
-    Try(path.deleteRecursively(continueOnFailure = false))
-
+//    var path: Path = Path.fromString("/tmp/temp-neo-best")
+//    Try(path.deleteRecursively(continueOnFailure = false))
+//
+    cleanup
 
     val data: List[Strip] = getInputData
     args(0) match {
@@ -34,6 +32,11 @@ object Etude5 {
         new BestMatchesGenerator(data).findBestMatches(args(1).toInt)
       }
       case "-n" => {
+//        var test = false
+//        for(i <- 1 to 1000 if !test){
+////          cleanup
+//          test = new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)
+//        }
         new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)
       }
       case "-b" => {
@@ -45,12 +48,14 @@ object Etude5 {
 
   def getInputData : List[Strip]= {
     val scanner = new Scanner(System.in)
+    var id = 1
     try{
       val inputs = ListBuffer.empty[Strip]
       while(scanner.hasNextLine){
         val line: String = scanner.nextLine()
         if(line != ""){
-          inputs += Strip(line, UUID.randomUUID().toString)
+          inputs += Strip(line, id.toString)
+          id += 1
         }
       }
       val result = inputs.toList.sortBy { s =>
@@ -62,4 +67,8 @@ object Etude5 {
     }
   }
 
+  def cleanup = {
+    val path = Path.fromString("/tmp/neo/non")
+    Try(path.deleteRecursively(continueOnFailure = false))
+  }
 }

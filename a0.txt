@@ -1,0 +1,20 @@
+aca
+aca
+aca
+aca
+acb
+acb
+acc
+bca
+bca
+cca
+aca - aca => 3
+aca - aca => 3
+aca - aca => 3
+aca - acb => 2
+acb - acb => 3
+acb - acc => 2
+acc - bca => 1
+bca - bca => 3
+bca - cca => 2
+22

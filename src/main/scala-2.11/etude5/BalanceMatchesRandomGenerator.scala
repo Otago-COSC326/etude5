@@ -1,7 +1,6 @@
 package etude5
 
 import eu.fakod.neo4jscala.{EmbeddedGraphDatabaseServiceProvider, Neo4jWrapper}
-import org.neo4j.graphdb.Node
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.ListBuffer
@@ -9,7 +8,7 @@ import scala.collection.mutable.ListBuffer
 /**No
  * Created by tinhtooaung on 14/05/15.
  */
-class BalanceMatchesGenerator(strips: List[Strip]) extends Neo4jWrapper with EmbeddedGraphDatabaseServiceProvider{
+class BalanceMatchesRandomGenerator(strips: List[Strip]) extends Neo4jWrapper with EmbeddedGraphDatabaseServiceProvider{
 
   def findBalanceMatches(length: Int): Unit ={
     val bestLength = length/2

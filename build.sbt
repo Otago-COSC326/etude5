@@ -24,7 +24,7 @@ connectInput in run := true
 
 mainClass in assembly := Some("etude5.Etude5")
 mainClass in Compile := Some("etude5.Etude5")
-assemblyJarName in assembly := "etude5.jar"
+assemblyJarName in assembly := "makeCarpet.jar"
 
 assemblyMergeStrategy in assembly := {
   case n if n.startsWith("META-INF/eclipse.inf") => MergeStrategy.discard
@@ -44,5 +44,4 @@ assemblyMergeStrategy in assembly := {
   case n if n.startsWith("license.html") => MergeStrategy.discard
   case n if n.startsWith("about.html") => MergeStrategy.discard
   case _ => MergeStrategy.first
-
 }

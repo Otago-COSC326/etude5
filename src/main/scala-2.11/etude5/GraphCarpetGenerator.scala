@@ -1,6 +1,8 @@
 package etude5
 
-import eu.fakod.neo4jscala.{Cypher, EmbeddedGraphDatabaseServiceProvider, Neo4jWrapper}
+import java.net.URI
+
+import eu.fakod.neo4jscala._
 import org.neo4j.graphalgo.GraphAlgoFactory
 import org.neo4j.graphdb.{Direction, Node, Path}
 import org.neo4j.kernel.Traversal
@@ -15,6 +17,8 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
   extends Neo4jWrapper with EmbeddedGraphDatabaseServiceProvider with Cypher{
 
   def neo4jStoreDir = ""
+//  override def uri: URI = URI.create("http://localhost:7474")
+//  override def userPw: Option[(String, String)] = Some(("neo4j", "test"))
 
   def getCurrentWeight(path: Path): Int ={
     var sum: Int = 0
@@ -28,9 +32,6 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
     val finder = GraphAlgoFactory.pathsWithLength(
       Traversal.pathExpanderForTypes("matches", Direction.BOTH), length - 1
     )
-    //    finder.findAllPaths(startNode, endNode).filter { path =>
-    //      path.length() == length - 1
-    //    }.toList
     finder.findAllPaths(startNode, endNode).toList
   }
 
@@ -43,16 +44,16 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
   def printNodesWithSort(nodes: List[Node]) = {
     println(nodes.toList.sortBy(_("value").getOrElse("")).map{ node =>
       node("value").getOrElse("")
-    }.mkString(" "))
+    }.mkString("\n"))
   }
 
   def printNodes(nodes: List[Node]) = {
     println(nodes.toList.map{ node =>
       node("value").getOrElse("")
-    }.mkString(" "))
+    }.mkString("\n"))
   }
 
-  def constructGraph(f: Strip => List[(Strip, Int)]) = {
+  def constructGraph(f: Strip => List[(Strip, Int)])(d: (Node, Node) => Boolean) = {
     withTx {
       implicit neo =>
         val wordIndex = indexManager.forNodes("strips")
@@ -80,10 +81,7 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
             wordIndex.add(end, "value", matchableWord._1.value)
             wordIndex.add(end, "uniqueId", matchableWord._1.id)
           }
-
-          val noRelation = !start.getRelationships.exists { rel =>
-            rel.getEndNode()("uniqueId") != end("uniqueId")
-          }
+          val noRelation = d(start, end)
           if(noRelation){
             start.createRelationshipTo(end, "matches").setProperty("count", matchableWord._2)
           }
@@ -103,4 +101,6 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
     val startNode = wordIndex.get("uniqueId", id).getSingle
     startNode
   }
+
+
 }
