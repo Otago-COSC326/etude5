@@ -49,20 +49,6 @@ class NonMatchesGenerator(var strips: Set[Strip]) extends Neo4jWrapper with Embe
 
   def findNonMatches(length: Int): Boolean = {
     var result = getNonMatches(length)
-//    for(i <- 1 to 1000) {
-//
-//      if(result.isRight) {
-//        //        withTx {implicit neo =>
-//        //          getAllNodes.foreach {node =>
-//        //            getNodeIndex("strips").get.remove(node, "combo")
-//        //            node.getRelationships.foreach(_.delete())
-//        //            node.delete()
-//        //          }
-//        //        }
-//        //        init
-//        result = getNonMatches(length)
-//      }
-//    }
     result match {
       case Left(s) => {
         if(s.nonEmpty){

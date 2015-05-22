@@ -32,15 +32,11 @@ object Etude5 {
         new BestMatchesGenerator(data).findBestMatches(args(1).toInt)
       }
       case "-n" => {
-//        var test = false
-//        for(i <- 1 to 1000 if !test){
-////          cleanup
-//          test = new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)
-//        }
         new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)
       }
       case "-b" => {
-        new BalanceMatchesGenerator(data).findBalanceMatches(args(1).toInt)
+//        new BalanceMatchesGenerator(data).findBalanceMatches(args(1).toInt)
+        new BalanceMatchesRandomGenerator(data).findBestMatches(args(1).toInt)
       }
       case _ => println("Not implemented yet")
     }
