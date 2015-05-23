@@ -11,9 +11,16 @@ import scala.collection.JavaConversions._
 /**
  * Created by tinhtooaung on 14/05/15.
  */
-class BestMatchesGenerator(strips: List[Strip]) extends GraphCarpetGenerator(strips, "b"){
+class BestMatchesGenerator(var strips: List[Strip]) extends GraphCarpetGenerator(strips, "b"){
 
   override def neo4jStoreDir: String = s"/tmp/neo/${UUID.randomUUID().toString}"
+
+  strips ++= strips.map { strip =>
+    Strip(strip.value.reverse, strip.id)
+  }
+  strips = strips.toList.sortBy { s =>
+    strips.count(_.value == s.value)
+  }.reverse
 
   constructGraph { strip =>
     findMatchableStrip(strip)

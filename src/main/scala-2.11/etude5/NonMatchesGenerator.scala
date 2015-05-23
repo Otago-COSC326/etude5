@@ -48,7 +48,7 @@ class NonMatchesGenerator(var strips: Set[Strip]) extends Neo4jWrapper with Embe
 
 
   def findNonMatches(length: Int): Boolean = {
-    var result = getNonMatches(length)
+    val result = getNonMatches(length)
     result match {
       case Left(s) => {
         if(s.nonEmpty){

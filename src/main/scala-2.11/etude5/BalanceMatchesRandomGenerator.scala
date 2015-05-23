@@ -18,7 +18,7 @@ class BalanceMatchesRandomGenerator(strips: List[Strip]){
     var matchCount = 0
     var nonMatchCount = 0
     var currentBalanceCount = 0
-    for(i <- 1 to 1000){
+    for(i <- 1 to 1001){
       bufferList = ListBuffer[Strip](Random.shuffle(strips).take(length): _*)
       matchCount = countMatches(bufferList.toList)
       nonMatchCount = countNonMatches(bufferList.toList)

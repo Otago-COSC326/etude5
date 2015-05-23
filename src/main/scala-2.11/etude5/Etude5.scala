@@ -29,7 +29,7 @@ object Etude5 {
     val data: List[Strip] = getInputData
     args(0) match {
       case "-m" => {
-        new BestMatchesGenerator(data).findBestMatches(args(1).toInt)
+        new BestMatchesFlipGenerator(data).findBestMatches(args(1).toInt)
       }
       case "-n" => {
         new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)

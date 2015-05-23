@@ -71,6 +71,7 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
             start("uniqueId") = strip.id
             wordIndex.add(start, "value", strip.value)
             wordIndex.add(start, "uniqueId", strip.id)
+            wordIndex.add(start, "combo", (strip.id, strip.value))
           }
 
           var end = getNodeByUniqeId(id = matchableWord._1.id)
@@ -80,6 +81,7 @@ class GraphCarpetGenerator(strips: List[Strip], option: String)
             end("uniqueId") = matchableWord._1.id
             wordIndex.add(end, "value", matchableWord._1.value)
             wordIndex.add(end, "uniqueId", matchableWord._1.id)
+            wordIndex.add(start, "combo", (matchableWord._1.id, matchableWord._1.value))
           }
           val noRelation = d(start, end)
           if(noRelation){
