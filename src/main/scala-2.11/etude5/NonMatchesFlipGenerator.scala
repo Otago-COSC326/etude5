@@ -52,8 +52,8 @@ class NonMatchesFlipGenerator(var strips: Set[Strip]) extends Neo4jWrapper with 
     } {
       val startNode = getNodeByTuple(id = startStrip.id, value = startStrip.value)
       if (startNode != null) {
-        val newPaths = Traversal.description()
-          .relationships(string2RelationshipType("matches"), Direction.BOTH)
+        val newPaths = Traversal.description().depthFirst()
+//          .relationships(string2RelationshipType("matches"), Direction.BOTH)
           .evaluator(Evaluators.atDepth(length - 1))
           .traverse(startNode).iterator().toList
         possiblePaths ++= ListBuffer(newPaths: _*)
@@ -62,13 +62,22 @@ class NonMatchesFlipGenerator(var strips: Set[Strip]) extends Neo4jWrapper with 
       }
     }
 
+
+
+    println(possiblePaths.size)
     var result = List.empty[String]
     for(path <- possiblePaths if result.isEmpty){
       val strips = path.nodes().map(_("value").getOrElse("")).toList
       if(isNonMatches(strips)){
         result = strips
       }else{
-        result = flip(strips)
+        for(i <- 1 to 10 if !isNonMatches(result)){
+          if(result.isEmpty){
+            result = flip(strips, i % 2 == 0)
+          }else{
+            result = flip(result, i % 2 == 0)
+          }
+        }
       }
     }
     result
@@ -86,29 +95,29 @@ class NonMatchesFlipGenerator(var strips: Set[Strip]) extends Neo4jWrapper with 
     result.toList
   }
 
-  def flip(bestResult: List[String]) : List[String] = {
+  def flip(bestResult: List[String], keepFlip: Boolean = false) : List[String] = {
     val size = bestResult.size
-    var candidates = ListBuffer.empty[List[String]]
+    var myBestResult = bestResult
     for(i <- 1 to size){
-      val firstPartValues = bestResult.slice(0, i)
-      val secondPartValues = bestResult.slice(i, size).map(_.reverse)
+      val firstPartValues = myBestResult.slice(0, i)
+      val secondPartValues = myBestResult.slice(i, size).map(_.reverse)
 
       val result = firstPartValues ++ secondPartValues
-      //      println(firstPartValues.mkString(" ") + " ---- " + secondPartValues.mkString(" "))
-      //      println("===================")
-      candidates += result
+//            println(firstPartValues.mkString(" ") + " ---- " + secondPartValues.mkString(" "))
+//            println("===================")
+      if(isNonMatches(result) || keepFlip){
+        myBestResult = result
+      }
     }
-    candidates = candidates.filter { candidate =>
-      isNonMatches(candidate)
-    }
-    if(candidates.nonEmpty){
-      Random.shuffle(candidates).head
-    }else {
+    if(isNonMatches(myBestResult)){
+      myBestResult
+    }else{
       List.empty[String]
     }
   }
 
   def isNonMatches(list: List[String]): Boolean = {
+    if(list.isEmpty)return false
     list.sliding(2).foldLeft(0){ (matches, nodes) =>
       val node1: String = nodes.head
       val node2: String = nodes.last
@@ -129,7 +138,7 @@ class NonMatchesFlipGenerator(var strips: Set[Strip]) extends Neo4jWrapper with 
 
         for {
           strip <- strips
-          matchableStrip = findNotMatchableStrips(strip)
+          matchableStrip =  findNotMatchableStrips(strip)
           matchableWord <- matchableStrip if matchableStrip.nonEmpty
         }{
           var start = getNodeByTuple(id = strip.id, value=strip.value)
@@ -150,7 +159,7 @@ class NonMatchesFlipGenerator(var strips: Set[Strip]) extends Neo4jWrapper with 
           }
           start --> "matches" --> end
         }
-//        println("Node count: " + getAllNodes.size)
+        println("Node count: " + getAllNodes.size)
     }
   }
 

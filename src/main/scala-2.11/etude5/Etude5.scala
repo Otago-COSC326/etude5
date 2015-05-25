@@ -2,6 +2,8 @@ package etude5
 
 import java.util.{Scanner, UUID}
 
+import etude5.nonmatches.{NonMatchesGraph, Graph}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.{Random, Try}
 
@@ -32,7 +34,13 @@ object Etude5 {
         new BestMatchesFlipGenerator(data).findBestMatches(args(1).toInt)
       }
       case "-n" => {
-        new NonMatchesFlipGenerator(data.toSet).findNonMatches(args(1).toInt)
+//        new NonMatchesGenerator(data.toSet).findNonMatches(args(1).toInt)
+        val result = new NonMatchesGraph(data, args(1).toInt).possible()
+        if(result != null && result.nonEmpty){
+          println(result.mkString("\n"))
+        }else{
+          println("not possible")
+        }
       }
       case "-b" => {
         new BalanceMatchesRandomGenerator(data).findBestMatches(args(1).toInt)

@@ -134,7 +134,7 @@ class NonMatchesGenerator(var strips: Set[Strip]) extends Neo4jWrapper with Embe
   def findNotMatchableStrips(strip: Strip): List[(Strip, Int)] ={
     val result = ListBuffer.empty[(Strip, Int)]
     for{
-      s <- strips if (s.value != strip.value) && (s.id != strip.id)
+      s <- strips
     }{
       var matchesCount = 0
       for(c <- s.value.zipWithIndex){

@@ -49,9 +49,9 @@
     <orderEntry type="library" name="SBT: org.neo4j:neo4j-lucene-index:1.9.4:jar" level="project" />
     <orderEntry type="library" name="SBT: org.neo4j:neo4j-rest-graphdb:1.9:jar" level="project" />
     <orderEntry type="library" name="SBT: org.neo4j:neo4j-shell:1.9.4:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.neo4j:server-api:1.9:jar" level="project" />
     <orderEntry type="library" name="SBT: org.neo4j.3rdparty.javax.ws.rs:jsr311-api:1.1.2.r612:jar" level="project" />
     <orderEntry type="library" name="SBT: org.scala-lang.modules:scala-parser-combinators_2.11:1.0.1:jar" level="project" />
     <orderEntry type="library" name="SBT: org.scala-lang.plugins:scala-continuations-library_2.11:1.0.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.neo4j:server-api:1.9:jar" level="project" />
   </component>
 </module>
